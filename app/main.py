@@ -32,6 +32,9 @@ class model_input(BaseModel):
 # loading the saved model
 diabetes_model = pickle.load(open('diabetes_model.sav','rb'))
 
+@app.get("/")
+def read_root():
+    return {"Machine Learning Diabetes Project Hosted Using FastAPI": "use this forward url to post data /diabetes_prediction"}
 
 @app.post('/diabetes_prediction')
 def diabetes_pred(input_parameters : model_input):
@@ -52,10 +55,14 @@ def diabetes_pred(input_parameters : model_input):
     
     prediction = diabetes_model.predict([input_list])
     
-    if prediction[0] == 0:
-        return 'The person is not Diabetic'
-    
+    if sum(input_list) == 0:
+        return 'Enter valid data'
     else:
-        return 'The person is Diabetic'
+        prediction = diabetes_model.predict([input_list])
+        if prediction[0] == 0:
+            return 'The person is not Diabetic'
+        
+        else:
+            return 'The person is Diabetic'
 
 
